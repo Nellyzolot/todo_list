@@ -1,31 +1,37 @@
+import { handleActions } from 'redux-actions';
+import * as actions from '../constants/items';
+
 const initialState = {
   items: [],
-  isItemExist: false
+  isItemExist: false,
+  visibilityFilter: 'SHOW_ALL'
 };
 
-export default function item(state = initialState, action) {
+export default handleActions({
+  [actions.ADD_ITEM]: (state, action) => ({
+    ...state,
+    items: [...state.items, { id: action.payload.id, text: action.payload.text, isCompleted: false, visible: true }],
+    isItemExist: true
+  }),
 
-  switch (action.type) {
-    case 'ADD_ITEM':
-      return { ...state, items: [...state.items, { id: action.id, text: action.text, isCompleted: false, visible: true }], isItemExist: true}
-    
-    case 'DELETE_ITEM':
-      return {...state, items: state.items.filter(item => item.id !== action.id.id)};
-    
-    case 'COMPLETE_ITEM':
-      return {...state, items: state.items.map(item => item.id === action.id.id ? { ...item, isCompleted: action.isCompleted } : item)};
+  [actions.DELETE_ITEM]: (state, action) => ({
+    ...state,
+    items: state.items.filter(item => item.id !== action.payload.id)
+  }),
 
-    case 'SHOW_ACTIVE':
-      return {...state, items: state.items.map(item => item.isCompleted === false ? { ...item, visible: action.visible } : item)};
+  [actions.COMPLETE_ITEM]: (state, action) => ({
+    ...state,
+    items: state.items.map(item => item.id === action.payload.id ? { ...item, isCompleted: action.payload.isCompleted } : item)
+  }),
 
-    case 'SHOW_COMPLETED':
-      return {...state, items: state.items.map(item => item.isCompleted === true ? { ...item, visible: action.visible } : item)};
+  [actions.SET_FILTER]: (state, action) => ({
+    ...state,
+    visibilityFilter: action.payload.visibilityFilter
+  }),
 
-    case 'DELETE_ITEMS':
-      return {...state, items: state.items.filter(item => item.isCompleted === false)};
+  [actions.DELETE_ITEMS]: (state, action) => ({
+    ...state,
+    items: state.items.filter(item => item.isCompleted === false)
+  }),
 
-    default:
-      return state;
-  }
-
-}
+}, initialState);

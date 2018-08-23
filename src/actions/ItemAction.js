@@ -1,17 +1,30 @@
-export const completeItem = (id, isCompleted) => ({
-  type: 'COMPLETE_ITEM',
-  id: id,
-  isCompleted: isCompleted
-})
+import * as actions from '../constants/items'
+import { createAction } from 'redux-actions';
 
-export const deleteItem = id => ({
-  type: 'DELETE_ITEM',
-  id: id
-})
+const completeItemAction = createAction(
+  actions.COMPLETE_ITEM
+);
+
+const deleteItemAction = createAction(
+  actions.DELETE_ITEM
+);
+
+const addItemAction = createAction(
+  actions.ADD_ITEM
+);
+
+export const completeItem = (id, isCompleted) =>
+  completeItemAction({
+    id: id,
+    isCompleted: isCompleted
+  })
+
+export const deleteItem = id =>
+  deleteItemAction({ id })
 
 let nextTodoId = 0
-export const addItem = text => ({
-  type: 'ADD_ITEM',
-  id: nextTodoId++,
-  text: text
-})
+export const addItem = text =>
+  addItemAction({
+    id: nextTodoId++,
+    text: text
+  })

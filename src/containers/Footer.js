@@ -1,16 +1,17 @@
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {showActive, showCompleted, deleteItems} from '../actions/ShowAction';
+import { connect } from 'react-redux';
+import { setFilter, deleteItems } from '../actions/ShowAction';
 import Footer from '../components/Footer';
+import { getCountOfItems } from '../selectors/count'
+import { showClearButton } from '../selectors/showClearButton'
 
 const mapStateToProps = state => ({
-    items: state.itemReducer.items,
-  });
+  count: getCountOfItems(state),
+  showClearButton: showClearButton(state)
+});
 
-const mapDispatchToProps = dispatch => bindActionCreators({
-  showActive,
-  showCompleted,
+const mapDispatchToProps = {
+  setFilter,
   deleteItems
-  }, dispatch);
-  
-  export default connect(mapStateToProps, mapDispatchToProps)(Footer);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Footer);
