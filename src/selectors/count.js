@@ -1,10 +1,9 @@
 import { createSelector } from 'reselect'
-
-const getItems = (state) => state.itemReducer.items
+import { getItems } from 'app/selectors/filters'
 
 export const getCountOfItems = createSelector(
-  [getItems],
-  (items) => {
-    return items.filter(item => !item.isCompleted).length
-  }
+	[getItems],
+	(items) => {
+		return items.filter(item => !item.isCompleted).length
+	}
 )

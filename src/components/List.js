@@ -1,49 +1,63 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import Item from '../containers/Item'
-import Footer from '../containers/Footer'
+import Item from 'app/containers/Item'
+import Footer from 'app/containers/Footer'
+import { itemProps } from 'app/constants/items';
 
 export default class List extends Component {
-    static propTypes = {
-        items: PropTypes.arrayOf(PropTypes.object).isRequired,
-        isItemExist: PropTypes.bool.isRequired,
-        addItem: PropTypes.func.isRequired,
-    };
+	static propTypes = {
+		items: PropTypes.arrayOf(PropTypes.shape(itemProps)),
+		shouldShowFooter: PropTypes.bool.isRequired,
+		addItem: PropTypes.func.isRequired,
+	};
 
-    handleSubmit = event => {
-        const { addItem } = this.props;
-        event.preventDefault();
-        addItem(ReactDOM.findDOMNode(this.refs.item_name).value);
-        ReactDOM.findDOMNode(this.refs.item_name).value = null;
-    };
+	static defaultProps = {
+		items: [],
+	}
 
-    render() {
-        const { items, isItemExist } = this.props;
-        return (
-            <div className='list'>
-                <form className='list__form' onSubmit={this.handleSubmit.bind(this)}>
-                    <input
-                        className='list__input'
-                        placeholder='Write sentence'
-                        name='item_name'
-                        ref='item_name'
-                    ></input>
-                </form>
-                {(isItemExist) ?
-                    <div>
-                        <ul>
-                            {items.map((item) => (
-                                (item.visible) ?
-                                    <Item key={item.id} id={item.id} text={item.text} isCompleted={item.isCompleted} />
-                                    : null
-                            ))}
-                        </ul>
-                        <Footer />
-                    </div>
-                    : null
-                }
-            </div>
-        );
-    }
+	state = {
+		textValue: '',
+	}
+
+	handleSubmit = event => {
+		const { addItem } = this.props;
+		event.preventDefault();
+		addItem(this.state.textValue);
+		this.setState({textValue: ''});
+	};
+
+	handleChangeInput = (event) => this.setState({
+		textValue: event.currentTarget.value
+	});
+
+	render() {
+		const { items, shouldShowFooter } = this.props;
+		return (
+			<div className='list'>
+				<form className='list__form' onSubmit={this.handleSubmit}>
+					<input
+						className='list__input'
+						placeholder='Write sentence'
+						name='item_name'
+						onChange={this.handleChangeInput}
+						value={this.state.textValue}
+					></input>
+				</form>
+				<div>
+				{(items.length > 0) &&
+					<ul>
+						{items.map(item =>
+							<Item key={item.id} id={item.id} text={item.text} isCompleted={item.isCompleted} />
+						)}
+					</ul>
+				}
+				{shouldShowFooter && items.length === 0 &&
+					<span>No items</span>
+				}
+				{shouldShowFooter && <Footer />}
+				</div>
+			</div>
+		);
+	}
 }

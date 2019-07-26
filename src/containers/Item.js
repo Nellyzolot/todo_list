@@ -1,14 +1,10 @@
 import { connect } from 'react-redux';
-import { completeItem, deleteItem } from '../actions/ItemAction';
-import Item from '../components/Item';
-
-const mapStateToProps = state => ({
-  items: state.itemReducer.items,
-});
+import { completeItem, deleteItem } from 'app/actions/ItemAction';
+import Item from 'app/components/Item';
 
 const mapDispatchToProps = {
-  deleteItem,
-  completeItem
+	deleteItem,
+	completeItem
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Item);
+export default connect(null, mapDispatchToProps)(Item);
